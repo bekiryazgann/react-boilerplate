@@ -1,47 +1,39 @@
-import React, {useState, useEffect} from "react";
-import {useWords} from "@/store/useWords.js";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 export default function Home() {
-    const words = useWords(state => state.words);
-    const [activeWord, setActiveWord] = useState(words[0]);
-    const inputRefs = words.map(() => React.createRef());
+   const [count, setCount] = useState(1);
 
-    useEffect(() => {
-        const activeWordIndex = words.indexOf(activeWord);
-        if (inputRefs[activeWordIndex]) {
-            inputRefs[activeWordIndex].current.focus();
-        }
-    }, [activeWord]);
+   return (
+      <div className="flex h-screen items-center justify-center bg-zinc-900">
+         <div className="container mx-auto flex items-center justify-center gap-2  p-4">
+            <Button
+               className="border border-zinc-50/20 bg-transparent"
+               onClick={() => {
+                  if (!count <= 0) {
+                     setCount(count - 1);
+                  }
+               }}
+            >
+               Decrement
+            </Button>
 
-    return (
-        <section>
-            <div className="h-[200px] !overflow-hidden">
-                <div className="flex flex-wrap content-start">
-                    {words.map((word, index) => (
-                        <div key={word} className="relative p-2">
-                            <div className="opacity-0 text-4xl font-mono">{word}</div>
-                            <span className="text-gray-800 text-4xl font-medium font-mono absolute top-0 left-0">
-                                {word}
-                            </span>
-                            <input type="text"
-                                   ref={inputRefs[index]}
-                                   className="absolute top-0 left-0 bg-transparent focus:outline-none font-mono text-4xl pointer-events-none"
-                                   onKeyDown={event => {
-                                       if (event.code === "Space") {
-                                           //if (word.length === event.target.value){
-                                               setActiveWord(words[index + 1]);
-                                               event.preventDefault();
-                                           //}
-                                       }
-                                       if (event.code === "Backspace" && event.target.value === "") {
-                                           setActiveWord(words[index - 1]);
-                                           event.preventDefault();
-                                       }
-                                   }}/>
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    )
+            <Input
+               className="max-w-[100px] text-center"
+               value={count}
+               onChange={(event) => setCount(Number(event.target.value))}
+            />
+
+            <Button
+               className="border border-zinc-50/20 bg-transparent"
+               onClick={() => {
+                  setCount(count + 1);
+               }}
+            >
+               Increment
+            </Button>
+         </div>
+      </div>
+   );
 }
